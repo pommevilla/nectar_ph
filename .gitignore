@@ -1,6 +1,7 @@
 # History files
 .Rhistory
 .Rapp.history
+*.Rproj
 
 # Python notebook checkpoints
 *.ipynb_checkpoints
