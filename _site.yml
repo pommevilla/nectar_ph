@@ -6,7 +6,7 @@ navbar:
   - text: About
     href: index.html
   - text: Nectar Microbiome
-    href: elbows.html
+    href: nmph.html
     
 output:
   html_document:
