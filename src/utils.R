@@ -17,7 +17,6 @@ get_persistence_list <- function(phyloseq_object, treatment, metric = "bray", di
   return(persistence_list)
 }
 
-
 get_pairwise_permutation_tests <- function(persistence_list, iters = 1000){
   permutation_tests <- list()
   unique_treatments <- names(persistence_list)
@@ -35,7 +34,6 @@ get_pairwise_permutation_tests <- function(persistence_list, iters = 1000){
   }
   return(permutation_tests)
 }
-
 
 get_dimension_heatmap <- function(permutations_object, dimension = 2, triangle = FALSE){
   unique_treatments <- unique(c(str_split(names(permutations_object), "-", simplify = TRUE)))
@@ -80,4 +78,29 @@ rotate_triangular <- function(triangle_ggplot)
   q$data[[2]]$angle <- 135
   q <- as.ggplot(ggplot_gtable(q))
   print(q, vp = viewport(angle = -135))
+}
+
+get_landscape <- function(homology, max_oe = 20, d = 1, min_x = "auto", max_x = "auto") {
+  if (min_x == "auto"){
+    t <- homology[, 2:3]
+    min_x = min(t[t > 0]) / 2
+  }
+  if (max_x == "auto"){
+    t <- homology[, 2:3]
+    max_x = max(t[t > 0])
+  }
+  x.seq <- seq(min_x, max_x, length = 500)
+  lands <- as.data.table(x.seq)
+  for (oe in 1:max_oe){
+    lands[, deparse(oe) := list(landscape(homology, dimension = d, 
+                                          KK = oe, tseq = x.seq))]
+    
+  }
+  colnames(lands) <- c("x", 1:max_oe)
+  lands.melted <- melt(lands, "x")
+  ggplot(lands.melted, aes(x = x, y = value, color = variable)) + geom_line() +
+    labs(x = element_blank(), y = element_blank())  +
+    theme(axis.title = element_blank(), axis.text = element_blank(),
+          legend.position = "none", panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
+    scale_color_grey()
 }
