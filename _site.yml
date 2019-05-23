@@ -3,13 +3,19 @@ output_dir: docs
 navbar:
   title: ''
   left:
-  - text: Elbows
+  - text: About
+    href: index.html
+  - text: Nectar Microbiome
     href: elbows.html
     
 output:
   html_document:
-    theme: lumen
+    theme: materia
     include:
       after_body: src/footer.html
     lib_dir: site_libs
+    toc: yes
+    toc_float:
+      smooth_scroll: yes
+      collapsed: no
     self_contained: no
