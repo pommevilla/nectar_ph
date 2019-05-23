@@ -1,0 +1,144 @@
+---
+title: "Persistent Homology"
+author: "Paul Villanueva"
+date: "4/11/2019"
+output: html_document
+---
+
+```{r setup.1, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
+```
+
+```{r setup.2, warning = FALSE, include = FALSE, cache = TRUE}
+library(data.table)
+library(ggmap)
+library(ggplot2)
+library(ggplotify)
+library(grid)
+# library(MASS)
+library(TDA)
+library(TDAstats)
+library(phyloseq)
+library(phylosmith)
+library(plotly)
+library(reshape2)
+library(stringr)
+library(tidyverse)
+library(vegan)
+
+source('./src/utils.R')
+
+theme_set(theme_light())
+
+```
+
+# Nectar Microbiome
+
+```{r}
+nectar <- readRDS("./data/bacteria_phyloseq.RDS")
+nectar.homology <- get_homology_from_phyloseq(nectar)
+plot_barcode(nectar.homology) + 
+  labs(x = "Nectar") +
+  xlim(0, 4) + 
+  theme(axis.text = element_blank(), axis.ticks = element_blank(),
+        legend.position = "none")
+```
+
+## Getting the map
+
+```{r}
+nectar.sample_data <- nectar@sam_data %>% 
+  add_count(Treatment) %>% 
+  mutate(Treatment_n = paste0(Treatment, " (", n, ")"))
+
+if (!file.exists("./data/jrbp.map.rds"))
+{
+  jrbp.map <- get_map(location = c(lon = mean(nectar.sample_data$longitude), 
+                                   lat = mean(nectar.sample_data$latitude)), zoom = 17, 
+                      maptype = "satellite", scale = 2)
+  saveRDS(jrbp.map, "./data/jrbp.map.rds")
+} else {
+  jrbp.map <- readRDS("./data/jrbp.map.rds")
+}
+
+```
+
+
+```{r, include = FALSE, warnings = FALSE}
+jrbp.plot <- ggmap(jrbp.map) + 
+  geom_point(data = nectar.sample_data,
+             aes(x = longitude, y = latitude, fill = Treatment_n), 
+             size = 1.75, shape = 21, alpha = 0.5) +
+  labs(x = "", y = "", fill = "Treatment (n)"
+       # title = "Some sample locations for JRBP", subset = "Random subset"
+       ) +
+  theme(axis.ticks = element_blank(), axis.text = element_blank())
+```
+
+```{r}
+ggplotly(jrbp.plot, 
+         tooltip = c("latitude", "longitude", "treatment"))
+```
+
+## Permutation tests
+
+```{r}
+nectar.by_treatment.bray <- get_persistence_list(nectar, "Treatment")
+if (!file.exists("./data/nectar.bray.perm_tests")){
+  nectar.bray.perm_tests <- get_pairwise_permutation_tests(nectar.by_treatment.bray, 
+                                                           iters = 1500)
+  saveRDS(nectar.bray.perm_tests, "./data/nectar.bray.perm_tests")
+} else {
+  nectar.bray.perm_tests <- readRDS("./data/nectar.bray.perm_tests")
+}
+```
+
+
+```{r}
+get_dimension_heatmap(nectar.bray.perm_tests, dimension = 1, triangle = TRUE) +   
+  labs(title = "Dimension 1", subtitle = element_blank()) +
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "none")
+```
+
+```{r}
+get_dimension_heatmap(nectar.bray.perm_tests, dimension = 2, triangle = TRUE) + 
+  labs(title = "Dimension 2", subtitle = element_blank()) +
+  theme(plot.title = element_text(hjust = 0.5)) 
+```
+
+```{r}
+plot_barcode(nectar.by_treatment.bray$Exposed$hom) + 
+  labs(colour = "", x = "Exposed") + 
+  theme(axis.text = element_blank(), axis.ticks = element_blank(),
+        legend.position = "none")
+```
+
+### Sample
+
+```{r}
+angles <- runif(100, 0, 2 * pi)
+circ.2d <- cbind(cos(angles), sin(angles))
+```
+
+```{r}
+
+ggplot(as.data.frame(circ.2d)) + geom_point(aes(x = as.data.frame(circ.2d)[,1], y = as.data.frame(circ.2d)[, 2]))+
+  labs(x = "", y = "") + 
+  theme(axis.text.x = element_blank(), axis.text.y = element_blank(), axis.ticks = element_blank())
+
+```
+
+```{r}
+circ.hom <- calculate_homology(circ.2d, dim = 1)
+plot_barcode(circ.hom) +
+  labs(x = element_blank()) +  
+  theme(axis.text = element_blank(), axis.ticks = element_blank(),
+        legend.position = "none")
+```
+
+
+```{r}
+get_landscape(circ.hom, d = 0, max_x = 0.5) + 
+  labs(title = "Test") 
+```
+
