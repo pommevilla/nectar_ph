@@ -66,22 +66,28 @@ jrbp.plot <- ggmap(jrbp.map) +
              aes(x = longitude, y = latitude, fill = Treatment_n), 
              size = 1.75, shape = 21, alpha = 0.5) +
   labs(x = "", y = "", fill = "Treatment (n)",
-       title = "Sample locations (random subset)"
+       title = "M. aurantiacus sample locations at JRBP"
        ) +
-  theme(axis.ticks = element_blank(), axis.text = element_blank())
+  theme(axis.ticks = element_blank(), axis.text = element_blank(),
+        legend.title = element_blank())
 ```
 
 ```{r jrbp.map.2}
-ggplotly(jrbp.plot, 
+ggplotly(jrbp.plot,
          tooltip = c("latitude", "longitude", "treatment"))
 ```
 
 
-*(To add: description of methods)*
+*(To add: data collection, bioinformatics methods)*
 
-They found that the beta diversity 
-
+They calculated the beta diversity of the microbial communities in each treatment by using the multivariate method based on dissimilarity matrices as defined by [Legendre and Caceres](https://onlinelibrary.wiley.com/doi/full/10.1111/ele.12141). The authors found that the beta diversity of the floral nectar microbial communities in the exposed treatment group was higher than in the treatment groups with lower opportunity for dispersal. While the authors outline several reasons why increased dispersal may increase beta diversity, 
 ![Boxplot of beta diversity of (from left to right) bagged, caged, and exposed sample treatments. (Credit: Vanette and Fukami, 2018)](./figs/beta_disper.png)
+
+*(To add: review of persistent homology)*
+
+I'm interested in applying persistent homology to microbial communities. A significant challenge for persistent homology is to relate the analysis back to the system of study. For example, in protein structure analysis (and other systems where spatial structure is important), a loop in the dataset might literally be a loop in the protein structure of study. But what do these topological structures represent in a microbial community? 
+
+This system in particular is interesting because there is a clear signal to detect - the exposed treatment has more beta diversity than the other two treatments, which are very similar in terms of beta diversity. Can persistent homology detect this same signal? And can we use this as a starting point to help us interpret what these bars mean in the context of microbial communities?
 
 # Barcodes
 
