@@ -1,12 +1,12 @@
 ---
-title: "Persistent Homology"
-author: "Paul Villanueva"
-date: "4/11/2019"
+title: "Persistent homology of microbial communities of <i>mimulus aurantiacus</i>"
+# author: "Paul Villanueva"
+# date: "4/11/2019"
 output: html_document
 ---
 
 ```{r setup.1, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, cache = TRUE)
 ```
 
 ```{r setup.2, warning = FALSE, include = FALSE, cache = TRUE}
@@ -15,6 +15,7 @@ library(ggmap)
 library(ggplot2)
 library(ggplotify)
 library(grid)
+library(gridExtra)
 library(TDA)
 library(TDAstats)
 library(phyloseq)
@@ -31,13 +32,13 @@ theme_set(theme_light())
 
 ```
 
-# Nectar Microbiome
+This is persistent homology analysis based on the study [*Dispersal enhances beta diversity in nectar microbes*](https://www.ncbi.nlm.nih.gov/pubmed/28597955) by [Rachel Vanette](http://entomology.ucdavis.edu/Faculty/Rachel_Vannette/) and [Tadashi Fukami](https://web.stanford.edu/~fukamit/). 
 
-Study is blah.
+# Introduction
 
-They found blah.
+The original study by Vanette and Fukami investigated the effect of dispersal on the diversity of the microbial communities of the *Mimulus aurantiacus* flower found in Jasper Ridge Biological preserve. The 
 
-```{r}
+```{r load.data}
 nectar <- readRDS("./data/bacteria_phyloseq.RDS")
 nectar.sample_data <- nectar@sam_data %>% 
   add_count(Treatment) %>% 
@@ -56,17 +57,13 @@ if (!file.exists("./data/jrbp.map.rds"))
 ```
 
 
-## Getting the map
-
-
-
 ```{r, include = FALSE, warnings = FALSE}
 jrbp.plot <- ggmap(jrbp.map) + 
   geom_point(data = nectar.sample_data,
              aes(x = longitude, y = latitude, fill = Treatment_n), 
              size = 1.75, shape = 21, alpha = 0.5) +
-  labs(x = "", y = "", fill = "Treatment (n)"
-       # title = "Some sample locations for JRBP", subset = "Random subset"
+  labs(x = "", y = "", fill = "Treatment (n)",
+       title = "Sample locations (random subset)"
        ) +
   theme(axis.ticks = element_blank(), axis.text = element_blank())
 ```
@@ -80,13 +77,63 @@ ggplotly(jrbp.plot,
 nectar.homology <- get_homology_from_phyloseq(nectar)
 plot_barcode(nectar.homology) + 
   labs(x = "Nectar") +
-  xlim(0, 4) + 
+  # xlim(0, 4) + 
   theme(axis.text = element_blank(), axis.ticks = element_blank(),
         legend.position = "none")
 ```
 
-Want to do persistent homology to see what's up.
+The found...
 
+![Test]('./figs/beta_disper.png')
+
+## Barcodes
+
+The persistence diagrams for the bagged and caged treatments:
+
+```{r barcode.caged.1, warning = FALSE}
+barcode.caged <- plot_barcode(nectar.by_treatment.bray$Caged$hom) + 
+  labs(colour = "", x = "Caged samples") +
+  expand_limits(x = 1) + 
+  theme(#axis.text = element_blank(), axis.ticks = element_blank(),
+        legend.position = "none") +
+  scale_x_continuous(breaks = c(0, 1))
+```
+
+```{r barcode.caged.2}
+barcode.bagged <- plot_barcode(nectar.by_treatment.bray$Bagged$hom) + 
+  labs(colour = "", x = "Bagged samples") +
+  theme(#axis.text = element_blank(), axis.ticks = element_blank(),
+        legend.position = "none") +
+  scale_x_continuous(breaks = c(0, 1))
+```
+
+```{r combined.barcodes}
+grid.arrange(barcode.caged, barcode.bagged, ncol = 2,
+             top =  "Barcode diagram of microbial communities")
+```
+
+The two diagrams above are very similar. In the first dimension, the barcodes have a similar shape, and there is a little smattering of second dimensional features. The similarity in the barcode diagrams might reflect the similarity in beta diversity between the two treatments. As shown in the figure above, the beta diversity found in the caged and bagged treatments were very similar to each other. 
+
+Of note is that the bagged samples have noticably more 1st-dimension barcodes than the caged samples. While there could be a meaningful biological reason for this, I believe the more numerous barcodes are just due to the fact that there are more bagged samples (104) than caged samples (73).
+
+
+
+
+```{r}
+plot_barcode(nectar.by_treatment.bray$Exposed$hom) + 
+  labs(colour = "", x = "Exposed samples", 
+       title = "Barcode diagram of microbial communities") +
+  theme(#axis.text = element_blank(), axis.ticks = element_blank(),
+        legend.position = "none",
+        plot.title = element_text(hjust = 0.5)) +
+  scale_x_continuous(breaks = c(0, 1))
+```
+
+What's interesting here i
+
+
+
+## Permutation tests
 
 ## Permutation tests
 
@@ -114,12 +161,6 @@ get_dimension_heatmap(nectar.bray.perm_tests, dimension = 2, triangle = TRUE) +
   theme(plot.title = element_text(hjust = 0.5)) 
 ```
 
-```{r}
-plot_barcode(nectar.by_treatment.bray$Exposed$hom) + 
-  labs(colour = "", x = "Exposed") + 
-  theme(axis.text = element_blank(), axis.ticks = element_blank(),
-        legend.position = "none")
-```
 
 ### Sample
 
