@@ -6,7 +6,7 @@ output: html_document
 ---
 
 ```{r setup.1, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, warning = FALSE, cache = TRUE)
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, cache = TRUE, message = FALSE)
 ```
 
 ```{r setup.2, warning = FALSE, include = FALSE, cache = TRUE}
@@ -82,11 +82,11 @@ plot_barcode(nectar.homology) +
         legend.position = "none")
 ```
 
-The found...
+They found...
 
-![Test]('./figs/beta_disper.png')
+![Test](./figs/beta_disper.png)
 
-## Barcodes
+# Barcodes
 
 The persistence diagrams for the bagged and caged treatments:
 
@@ -103,7 +103,7 @@ barcode.caged <- plot_barcode(nectar.by_treatment.bray$Caged$hom) +
 barcode.bagged <- plot_barcode(nectar.by_treatment.bray$Bagged$hom) + 
   labs(colour = "", x = "Bagged samples") +
   theme(#axis.text = element_blank(), axis.ticks = element_blank(),
-        legend.position = "none") +
+        legend.position = "none")  +
   scale_x_continuous(breaks = c(0, 1))
 ```
 
@@ -131,11 +131,7 @@ plot_barcode(nectar.by_treatment.bray$Exposed$hom) +
 
 What's interesting here i
 
-
-
-## Permutation tests
-
-## Permutation tests
+# Permutation tests
 
 ```{r}
 nectar.by_treatment.bray <- get_persistence_list(nectar, "Treatment")
@@ -160,34 +156,3 @@ get_dimension_heatmap(nectar.bray.perm_tests, dimension = 2, triangle = TRUE) +
   labs(title = "Dimension 2", subtitle = element_blank()) +
   theme(plot.title = element_text(hjust = 0.5)) 
 ```
-
-
-### Sample
-
-```{r}
-angles <- runif(100, 0, 2 * pi)
-circ.2d <- cbind(cos(angles), sin(angles))
-```
-
-```{r}
-
-ggplot(as.data.frame(circ.2d)) + geom_point(aes(x = as.data.frame(circ.2d)[,1], y = as.data.frame(circ.2d)[, 2]))+
-  labs(x = "", y = "") + 
-  theme(axis.text.x = element_blank(), axis.text.y = element_blank(), axis.ticks = element_blank())
-
-```
-
-```{r}
-circ.hom <- calculate_homology(circ.2d, dim = 1)
-plot_barcode(circ.hom) +
-  labs(x = element_blank()) +  
-  theme(axis.text = element_blank(), axis.ticks = element_blank(),
-        legend.position = "none")
-```
-
-
-```{r}
-get_landscape(circ.hom, d = 0, max_x = 0.5) + 
-  labs(title = "Test") 
-```
-
