@@ -36,7 +36,11 @@ This is persistent homology analysis based on the study [*Dispersal enhances bet
 
 # Introduction
 
-The original study by Vanette and Fukami investigated the effect of dispersal on the diversity of the microbial communities of the *Mimulus aurantiacus* flower found in Jasper Ridge Biological preserve. The 
+The original study by Vanette and Fukami investigated the effect of dispersal on the diversity of the microbial communities of the *Mimulus aurantiacus* flower found in Jasper Ridge Biological preserve. In particular, they wanted to see how varying levels of dispersal affects beta diversity, the "the variation in species composition among local communities." Increasing opportunities for dispersal between microbial communities within a region are thought to have a homogenizing effect on the communities as the members of individual communities are free to move between the communities. Thus, over time, the communities within the region will all be more and more identical, thus decreasing beta diversity.
+
+To study this, Vanette and Fukami, manipulated dispersal opportunities to the floral nectar of *Mimulus aurantiacus*. The floral nectar of *M. aurantiacus* is initially sterile (owing to the high sugar content), and the main dispersal vector of microbes into this nectar is via *Calypte anna*, or Anna's hummingbird. These conditions make it an ideal system to study the effects of dispersal on beta diversity.
+
+The flowers were separated into three treatment groups. These treatments, in order of decreasing dispersal opportunity, are: exposed flowers, with no barriers to dispersal; caged flowers, which prevented hummingbirds from accessing the flowers; and caged flowers, which prevented hummingbirds and insects from accessing the plants, leaving wind as the only dispersal vector to the affected flowers. These flowers were located in various places across Jasper Ridge Biological Preserve. The figure below has some sample locations.
 
 ```{r load.data}
 nectar <- readRDS("./data/bacteria_phyloseq.RDS")
@@ -56,8 +60,7 @@ if (!file.exists("./data/jrbp.map.rds"))
 
 ```
 
-
-```{r, include = FALSE, warnings = FALSE}
+```{r jrbp.map.1, include = FALSE, warnings = FALSE}
 jrbp.plot <- ggmap(jrbp.map) + 
   geom_point(data = nectar.sample_data,
              aes(x = longitude, y = latitude, fill = Treatment_n), 
@@ -68,25 +71,30 @@ jrbp.plot <- ggmap(jrbp.map) +
   theme(axis.ticks = element_blank(), axis.text = element_blank())
 ```
 
-```{r}
+```{r jrbp.map.2}
 ggplotly(jrbp.plot, 
          tooltip = c("latitude", "longitude", "treatment"))
 ```
 
-```{r}
+
+*(To add: description of methods)*
+
+They found that the beta diversity 
+
+![Boxplot of beta diversity of (from left to right) bagged, caged, and exposed sample treatments. (Credit: Vanette and Fukami, 2018)](./figs/beta_disper.png)
+
+# Barcodes
+
+Barcode diagram for all treatments together:
+
+
+```{r all.treatments}
 nectar.homology <- get_homology_from_phyloseq(nectar)
 plot_barcode(nectar.homology) + 
   labs(x = "Nectar") +
   # xlim(0, 4) + 
-  theme(axis.text = element_blank(), axis.ticks = element_blank(),
-        legend.position = "none")
+  theme(axis.text = element_blank(), axis.ticks = element_blank())
 ```
-
-They found...
-
-![Test](./figs/beta_disper.png)
-
-# Barcodes
 
 The persistence diagrams for the bagged and caged treatments:
 
@@ -119,7 +127,7 @@ Of note is that the bagged samples have noticably more 1st-dimension barcodes th
 
 
 
-```{r}
+```{r barcode.exposed}
 plot_barcode(nectar.by_treatment.bray$Exposed$hom) + 
   labs(colour = "", x = "Exposed samples", 
        title = "Barcode diagram of microbial communities") +
@@ -133,7 +141,7 @@ What's interesting here i
 
 # Permutation tests
 
-```{r}
+```{r load.perm}
 nectar.by_treatment.bray <- get_persistence_list(nectar, "Treatment")
 if (!file.exists("./data/nectar.bray.perm_tests")){
   nectar.bray.perm_tests <- get_pairwise_permutation_tests(nectar.by_treatment.bray, 
@@ -145,13 +153,13 @@ if (!file.exists("./data/nectar.bray.perm_tests")){
 ```
 
 
-```{r}
+```{r perm_heatmap.dim_1}
 get_dimension_heatmap(nectar.bray.perm_tests, dimension = 1, triangle = TRUE) +   
   labs(title = "Dimension 1", subtitle = element_blank()) +
-  theme(plot.title = element_text(hjust = 0.5), legend.position = "none")
+  theme(plot.title = element_text(hjust = 0.5))
 ```
 
-```{r}
+```{r perm_heatmap.dim_2}
 get_dimension_heatmap(nectar.bray.perm_tests, dimension = 2, triangle = TRUE) + 
   labs(title = "Dimension 2", subtitle = element_blank()) +
   theme(plot.title = element_text(hjust = 0.5)) 
