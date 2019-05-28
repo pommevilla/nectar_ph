@@ -32,7 +32,7 @@ theme_set(theme_light())
 
 ```
 
-This is persistent homology analysis based on the study [*Dispersal enhances beta diversity in nectar microbes*](https://www.ncbi.nlm.nih.gov/pubmed/28597955) by [Rachel Vanette](http://entomology.ucdavis.edu/Faculty/Rachel_Vannette/) and [Tadashi Fukami](https://web.stanford.edu/~fukamit/). 
+This page contains my current progress using persistent homology analysis based on the dataset from the study [*Dispersal enhances beta diversity in nectar microbes*](https://www.ncbi.nlm.nih.gov/pubmed/28597955) by [Rachel Vanette](http://entomology.ucdavis.edu/Faculty/Rachel_Vannette/) and [Tadashi Fukami](https://web.stanford.edu/~fukamit/). 
 
 # Introduction
 
@@ -93,6 +93,10 @@ This system in particular is interesting because there is a clear signal to dete
 
 Barcode diagram for all treatments together:
 
+```{r load.nectar_by_treatment}
+nectar.by_treatment.bray <- get_persistence_list(nectar, "Treatment")
+```
+
 
 ```{r all.treatments}
 nectar.homology <- get_homology_from_phyloseq(nectar)
@@ -130,9 +134,6 @@ The two diagrams above are very similar. In the first dimension, the barcodes ha
 
 Of note is that the bagged samples have noticably more 1st-dimension barcodes than the caged samples. While there could be a meaningful biological reason for this, I believe the more numerous barcodes are just due to the fact that there are more bagged samples (104) than caged samples (73).
 
-
-
-
 ```{r barcode.exposed}
 plot_barcode(nectar.by_treatment.bray$Exposed$hom) + 
   labs(colour = "", x = "Exposed samples", 
@@ -148,7 +149,6 @@ What's interesting here i
 # Permutation tests
 
 ```{r load.perm}
-nectar.by_treatment.bray <- get_persistence_list(nectar, "Treatment")
 if (!file.exists("./data/nectar.bray.perm_tests")){
   nectar.bray.perm_tests <- get_pairwise_permutation_tests(nectar.by_treatment.bray, 
                                                            iters = 1500)
