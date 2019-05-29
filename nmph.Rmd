@@ -1,7 +1,5 @@
 ---
 title: "Persistent homology of microbial communities of <i>mimulus aurantiacus</i>"
-# author: "Paul Villanueva"
-# date: "4/11/2019"
 output: html_document
 ---
 
@@ -91,22 +89,20 @@ This system in particular is interesting because there is a clear signal to dete
 
 # Barcodes
 
-Barcode diagram for all treatments together:
+The dataset is an abundance matrix $O$ of 3591 taxa by 195 samples. Thus, each sample $j$ is a point in $\mathbb{R}^{3591}$, and each $O_{ij}$ is the integer count of OTU $i$ observed in sample $j$. Then, all those taxa with 0 observations across all columns were removed, and all columns with 0 abundances across all rows were removed, leaving us with a new abundance matrix $O'$ with 3401 taxa and 194 samples. Then, I calculated the persistent homology for each treatment, using the Bray-Curtis dissimilarity measure as the metric. Below are the persistence diagrams for the bagged and caged treatments:
 
 ```{r load.nectar_by_treatment}
 nectar.by_treatment.bray <- get_persistence_list(nectar, "Treatment")
 ```
 
 
-```{r all.treatments}
+```{r all.treatments, include = FALSE}
 nectar.homology <- get_homology_from_phyloseq(nectar)
 plot_barcode(nectar.homology) + 
   labs(x = "Nectar") +
   # xlim(0, 4) + 
   theme(axis.text = element_blank(), axis.ticks = element_blank())
 ```
-
-The persistence diagrams for the bagged and caged treatments:
 
 ```{r barcode.caged.1, warning = FALSE}
 barcode.caged <- plot_barcode(nectar.by_treatment.bray$Caged$hom) + 
@@ -134,6 +130,8 @@ The two diagrams above are very similar. In the first dimension, the barcodes ha
 
 Of note is that the bagged samples have noticably more 1st-dimension barcodes than the caged samples. While there could be a meaningful biological reason for this, I believe the more numerous barcodes are just due to the fact that there are more bagged samples (104) than caged samples (73).
 
+Below is the barcode diagram for the exposed treatment.
+
 ```{r barcode.exposed}
 plot_barcode(nectar.by_treatment.bray$Exposed$hom) + 
   labs(colour = "", x = "Exposed samples", 
@@ -144,7 +142,8 @@ plot_barcode(nectar.by_treatment.bray$Exposed$hom) +
   scale_x_continuous(breaks = c(0, 1))
 ```
 
-What's interesting here i
+
+
 
 # Permutation tests
 
