@@ -80,7 +80,8 @@ ggplotly(jrbp.plot,
 
 They calculated the beta diversity of the microbial communities in each treatment by using the multivariate method based on dissimilarity matrices as defined by [Legendre and Caceres](https://onlinelibrary.wiley.com/doi/full/10.1111/ele.12141). The authors found that the beta diversity of the floral nectar microbial communities in the exposed treatment group was higher than in the treatment groups with lower opportunity for dispersal. While the authors outline several reasons why increased dispersal may increase beta diversity, this is still a surprising result given how intuitive the idea of dispersal having a homogenizing effect on beta diversity is.
 
-![Boxplot of beta diversity of (from left to right) bagged, caged, and exposed sample treatments. (Credit: Vanette and Fukami, 2018)](./figs/beta_disper.png)
+
+![Boxplot of beta diversity of (from left to right) bagged, caged, and exposed sample treatments. (Credit: Vanette and Fukami, 2018)](./images/beta_disper.png)
 
 *(To add: review of persistent homology)*
 
