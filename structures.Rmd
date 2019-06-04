@@ -1,0 +1,33 @@
+---
+title: "Patterns of microbial community assembly"
+output: html_document
+---
+
+```{r setup.1, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, cache = TRUE, message = FALSE)
+```
+
+```{r setup.2, warning = FALSE, include = FALSE, cache = TRUE}
+library(data.table)
+library(ggmap)
+library(ggplot2)
+library(ggplotify)
+library(grid)
+library(gridExtra)
+library(TDA)
+library(TDAstats)
+library(phyloseq)
+library(phylosmith)
+library(plotly)
+library(reshape2)
+library(stringr)
+library(tidyverse)
+library(vegan)
+
+source('./src/utils.R')
+
+theme_set(theme_light())
+
+```
+
+An overview of community structures in microbial ecology.
