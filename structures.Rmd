@@ -76,9 +76,7 @@ plot_barcode(sim_A.homology)
 
 ## Situation B: Spatial turnover
 
-
-
-```{r}
+```{r, baselga_sim.A}
 site_B1 <- sim.sample.contig_presence(12, 6)
 site_B2 <- c(sim.sample.contig_presence(6, 3), sim.sample.contig_presence(6, 3))
 site_B3 <- c(sim.sample.contig_presence(9, 3), rep(1, 3))
@@ -95,17 +93,81 @@ sim_B.physeq <- phyloseq(otu_table(sim_B.otu_table, taxa_are_rows = TRUE),
 
 ```
 
-```{r}
-plot_communities(sim_B.otu_table)
+```{r baselga_sim.A.plot}
+plot_communities(sim_B.otu_table) +
+  labs(title = "Simulation B: Turnover",
+       subtitle = "The three sites have the same richness and share some common species, but...")
+```
+
+```{r baselga_sim.B.hom}
+sim_B.homology <- get_homology_from_phyloseq(sim_B.physeq)
+plot_barcode(sim_B.homology)
+```
+
+
+## Situation C: Turnover and nestedness
+
+```{r, baselga_sim.C}
+site_C1 <- rep(1, 12)
+site_C2 <- sim.sample.contig_presence(12, 6)
+site_C3 <- c(sim.sample.contig_presence(6, 3), sim.sample.contig_presence(6, 3))
+sim_C.otu_table <- otu_mat_from_lists(site_C1, site_C2, site_C3)
+
+sim_C.tax_mat <- sim.sample.tax_info(nrow(sim_C.otu_table))
+
+sim_C.sample_data <- sim.sample.treatment_data(sim_C.otu_table)
+
+sim_C.physeq <- phyloseq(otu_table(sim_C.otu_table, taxa_are_rows = TRUE), 
+                         tax_table(sim_C.tax_mat),
+                         sim_C.sample_data)
+
+```
+
+```{r baselga_sim.C.plot}
+plot_communities(sim_C.otu_table) +
+  labs(title = "Simulation C: Turnover and nestedness",
+       subtitle = "The three sites have the same richness and share some common species, but...")
+```
+
+```{r baselga_sim.C.hom}
+sim_C.homology <- get_homology_from_phyloseq(sim_C.physeq)
+plot_barcode(sim_C.homology)
 ```
 
 
 
+## Situation D: Turnover and richness
+
+```{r, baselga_sim.C}
+site_D1 <- sim.sample.contig_presence(12, 6)
+site_D2 <- c(rep(0, 6), sim.sample.contig_presence(6, 2))
+site_D3 <- c(rep(0, 8), sim.sample.contig_presence(4, 1))
+sim_D.otu_table <- otu_mat_from_lists(site_D1, site_D2, site_D3)
+
+sim_D.tax_mat <- sim.sample.tax_info(nrow(sim_D.otu_table))
+
+sim_D.sample_data <- sim.sample.treatment_data(sim_D.otu_table)
+
+sim_D.physeq <- phyloseq(otu_table(sim_D.otu_table, taxa_are_rows = TRUE), 
+                         tax_table(sim_D.tax_mat),
+                         sim_D.sample_data)
+
+```
+
+```{r baselga_sim.C.plot}
+plot_communities(sim_D.otu_table) +
+  labs(title = "Simulation D: Turnover and richness",
+       subtitle = "The three sites have the same richness and share some common species, but...")
+```
+
+```{r baselga_sim.C.hom}
+sim_D.homology <- get_homology_from_phyloseq(sim_D.physeq)
+plot_barcode(sim_D.homology)
+```
+
 ## Increasing complexity
 
 Will first start off by increasing number of samples and OTUs.
-
-First simulation - everything present in all samples:
 
 ```{r}
 
@@ -121,32 +183,4 @@ head(sim_1.otu_table[1:3, 1:10])
 
 ```{r}
 plot_communities(sim_1.otu_table)
-```
-
-Adding fake taxonomy information:
-
-```{r}
-sim_1.tax_mat = matrix(sample(letters, 70, replace = TRUE), nrow = nrow(sim_1.otu_table), ncol = 7)
-rownames(sim_1.tax_mat) <- rownames(sim_1.otu_table)
-colnames(sim_1.tax_mat) <- c("Domain", "Phylum", "Class", "Order", "Family", "Genus", "Species")
-sim_1.tax_mat
-```
-
-
-Adding fake sample data
-```{r}
-sim_1.sample_data <- sample_data(data.frame(
-  Treatment = rep(c("Group 1", "Group 2"), each = 200),
-  row.names = colnames(sim_1.otu_table),
-  stringsAsFactors = FALSE))
-sim_1.sample_data
-```
-
-
-
-```{r}
-sim_1.physeq <- phyloseq(otu_table(sim_1.otu_table, taxa_are_rows = TRUE), 
-                         tax_table(sim_1.tax_mat),
-                         sim_1.sample_data)
-sim_1.physeq
 ```
