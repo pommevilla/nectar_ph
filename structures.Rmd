@@ -46,33 +46,58 @@ Start off with basic examples from Baselga's paper. Starting by reproducing thes
 site_A1 <- rep(1, 12)
 site_A2 <- sim.sample.contig_presence(12, 4)
 site_A3 <- sim.sample.contig_presence(12, 2)
-sim_A <- cbind(site_A1, site_A2, site_A3)
-row.names(sim_A) <- paste("OTU", 1:12, sep = "_")
+
+sim_A.otu_table <- otu_mat_from_lists(site_A1, site_A2, site_A3)
+
+sim_A.tax_mat <- sim.sample.tax_info(nrow(sim_A.otu_table))
+
+sim_A.sample_data <- sim.sample.treatment_data(sim_A.otu_table)
+
+sim_A.physeq <- phyloseq(otu_table(sim_A.otu_table, taxa_are_rows = TRUE), 
+                         tax_table(sim_A.tax_mat),
+                         sim_A.sample_data)
+
+
 ```
 
-```{r plot.baselga_sim.A}
-plot_communities(sim_A) 
+
+```{r baselga_sim.A.plot}
+plot_communities(sim_A.physeq@otu_table) + 
+  labs(title = "Simulation A: Nestedness",
+       subtitle = "The observed microbiome of Site A3 (resp. A2) is a proper subset of the observed microbiome \n in Site A2 (resp. A1)")
 ```
 
-Fake taxonomy information
+
+```{r baselga_sim.A.hom}
+sim_A.homology <- get_homology_from_phyloseq(sim_A.physeq)
+plot_barcode(sim_A.homology)
+```
+
+
+## Situation B: Spatial turnover
+
+
 
 ```{r}
-sim_A.tax_mat <- sim.sample.tax_info(12)
+site_B1 <- sim.sample.contig_presence(12, 6)
+site_B2 <- c(sim.sample.contig_presence(6, 3), sim.sample.contig_presence(6, 3))
+site_B3 <- c(sim.sample.contig_presence(9, 3), rep(1, 3))
+
+sim_B.otu_table <- otu_mat_from_lists(site_B1, site_B2, site_B3)
+
+sim_B.tax_mat <- sim.sample.tax_info(nrow(sim_B.otu_table))
+
+sim_B.sample_data <- sim.sample.treatment_data(sim_B.otu_table)
+
+sim_B.physeq <- phyloseq(otu_table(sim_B.otu_table, taxa_are_rows = TRUE), 
+                         tax_table(sim_B.tax_mat),
+                         sim_B.sample_data)
+
 ```
 
-
-
-Adding fake sample data
 ```{r}
-sim_1.sample_data <- sample_data(data.frame(
-  Treatment = rep(c("Group 1", "Group 2"), each = 200),
-  row.names = colnames(sim_1.otu_table),
-  stringsAsFactors = FALSE))
-sim_1.sample_data
+plot_communities(sim_B.otu_table)
 ```
-
-
-## Situation A: Spatial turnover
 
 
 

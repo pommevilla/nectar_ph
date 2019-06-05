@@ -152,7 +152,7 @@ sim.sample.tax_info <- function(num_otus){
 sim.sample.treatment_data <- function(otu_table){
   sample_matrix <- sample_data(data.frame(
     Treatment = rep("Control", ncol(otu_table)),
-    row.names = colnames(sim_A.otu_table),
+    row.names = colnames(otu_table),
     stringsAsFactors = FALSE
   ))
   return(sample_matrix)
