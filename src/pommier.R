@@ -104,3 +104,28 @@ get_landscape <- function(homology, max_oe = 20, d = 1, min_x = "auto", max_x = 
           legend.position = "none", panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
     scale_color_grey()
 }
+
+contig_presence <- function(num_otus, num_present){
+  return(c(rep(1, num_present), rep(0, num_otus - num_present)))
+}
+
+plot_communities <- function(community_matrix) {
+  community_matrix %>% 
+    t() %>% 
+    melt() %>% 
+    ggplot(aes(x = Var1, y = fct_rev(Var2), fill = value)) +
+    geom_tile(color = "white") +
+    labs(x = element_blank(), y = element_blank(), 
+         title = paste("Community structure of", deparse(substitute(community_matrix)))
+    ) +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1),
+          axis.text.y = element_text(),
+          panel.grid.major = element_blank(), 
+          panel.grid.minor = element_blank(),
+          panel.border = element_blank(), 
+          axis.ticks = element_blank(),
+          legend.position = "none") +
+    scale_x_discrete(label = function (x) str_to_title(str_replace(x, "_", " "))) + 
+    scale_y_discrete(label = function (x) str_replace(x, "_", " "))
+}
+
