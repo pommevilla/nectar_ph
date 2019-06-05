@@ -105,7 +105,7 @@ get_landscape <- function(homology, max_oe = 20, d = 1, min_x = "auto", max_x = 
     scale_color_grey()
 }
 
-contig_presence <- function(num_otus, num_present){
+sim.sample.contig_presence <- function(num_otus, num_present){
   return(c(rep(1, num_present), rep(0, num_otus - num_present)))
 }
 
@@ -129,3 +129,11 @@ plot_communities <- function(community_matrix) {
     scale_y_discrete(label = function (x) str_replace(x, "_", " "))
 }
 
+sim.sample.tax_info <- function(num_otus){
+  tax_mat <- matrix(sample(letters, 7 * num_otus, replace = TRUE), 
+                    nrow = num_otus, ncol = 7,
+                    dimnames = list(paste("OTU", 1:num_otus, sep = "_"), 
+                                    c("Domain", "Phylum", "Class", "Order", "Family", "Genus", "Species")))
+  
+  return(tax_mat)
+}

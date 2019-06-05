@@ -44,10 +44,9 @@ Start off with basic examples from Baselga's paper. Starting by reproducing thes
 
 ```{r baselga_sim.A}
 site_A1 <- rep(1, 12)
-site_A2 <- contig_presence(12, 4)
-site_A3 <- sim.contig_presence(12, 2)
+site_A2 <- sim.sample.contig_presence(12, 4)
+site_A3 <- sim.sample.contig_presence(12, 2)
 sim_A <- cbind(site_A1, site_A2, site_A3)
-colnames(sim_A)
 row.names(sim_A) <- paste("OTU", 1:12, sep = "_")
 ```
 
@@ -55,18 +54,10 @@ row.names(sim_A) <- paste("OTU", 1:12, sep = "_")
 plot_communities(sim_A) 
 ```
 
-
-Adding fake taxonomy information:
-
-```{r}
-sim_1.tax_mat = matrix(sample(letters, 70, replace = TRUE), nrow = nrow(sim_1.otu_table), ncol = 7)
-rownames(sim_1.tax_mat) <- rownames(sim_1.otu_table)
-colnames(sim_1.tax_mat) <- c("Domain", "Phylum", "Class", "Order", "Family", "Genus", "Species")
-sim_1.tax_mat
-```
+Fake taxonomy information
 
 ```{r}
-generate_
+sim_A.tax_mat <- sim.sample.tax_info(12)
 ```
 
 
