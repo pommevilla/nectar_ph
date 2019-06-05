@@ -176,7 +176,6 @@ sim_1.otu_table <- matrix(sample(1:100, num_samples * num_otus, replace = TRUE),
                           nrow = num_otus, ncol = num_samples,
                           dimnames = list(paste("OTU", 1:num_otus, sep = "_"), 
                                           paste("Sample", 1:num_samples, sep = "_")))
-head(sim_1.otu_table[1:3, 1:10])
 ```
 
 ```{r ic.2}
