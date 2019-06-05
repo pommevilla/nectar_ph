@@ -31,3 +31,106 @@ theme_set(theme_light())
 ```
 
 An overview of community structures in microbial ecology.
+
+Borrowing heavily from [Partitioning the turnover and nestedness components of beta diversity](https://onlinelibrary.wiley.com/doi/full/10.1111/j.1466-8238.2009.00490.x) by Andres Baselga.
+
+## Simulating communities
+
+Start off with basic examples from Baselga's paper. Starting by reproducing these structures:
+
+![alt](./images/baselga-structures.png)
+
+## Situation A: Nestedness
+
+```{r baselga_sim.A}
+site_A1 <- rep(1, 12)
+site_A2 <- sim.sample.contig_presence(12, 4)
+site_A3 <- sim.sample.contig_presence(12, 2)
+sim_A <- cbind(site_A1, site_A2, site_A3)
+colnames(sim_A)
+row.names(sim_A) <- paste("OTU", 1:12, sep = "_")
+```
+
+```{r plot.baselga_sim.A}
+plot_communities(sim_A) 
+```
+
+
+Adding fake taxonomy information:
+
+```{r}
+sim_1.tax_mat = matrix(sample(letters, 70, replace = TRUE), nrow = nrow(sim_1.otu_table), ncol = 7)
+rownames(sim_1.tax_mat) <- rownames(sim_1.otu_table)
+colnames(sim_1.tax_mat) <- c("Domain", "Phylum", "Class", "Order", "Family", "Genus", "Species")
+sim_1.tax_mat
+```
+
+```{r}
+generate_
+```
+
+
+
+Adding fake sample data
+```{r}
+sim_1.sample_data <- sample_data(data.frame(
+  Treatment = rep(c("Group 1", "Group 2"), each = 200),
+  row.names = colnames(sim_1.otu_table),
+  stringsAsFactors = FALSE))
+sim_1.sample_data
+```
+
+
+## Situation A: Spatial turnover
+
+
+
+## Increasing complexity
+
+Will first start off by increasing number of samples and OTUs.
+
+First simulation - everything present in all samples:
+
+```{r}
+
+num_samples = 30
+num_otus = 10
+
+sim_1.otu_table <- matrix(sample(1:100, num_samples * num_otus, replace = TRUE), 
+                          nrow = num_otus, ncol = num_samples,
+                          dimnames = list(paste("OTU", 1:num_otus, sep = "_"), 
+                                          paste("Sample", 1:num_samples, sep = "_")))
+head(sim_1.otu_table[1:3, 1:10])
+```
+
+```{r}
+plot_communities(sim_1.otu_table)
+```
+
+Adding fake taxonomy information:
+
+```{r}
+sim_1.tax_mat = matrix(sample(letters, 70, replace = TRUE), nrow = nrow(sim_1.otu_table), ncol = 7)
+rownames(sim_1.tax_mat) <- rownames(sim_1.otu_table)
+colnames(sim_1.tax_mat) <- c("Domain", "Phylum", "Class", "Order", "Family", "Genus", "Species")
+sim_1.tax_mat
+```
+
+
+Adding fake sample data
+```{r}
+sim_1.sample_data <- sample_data(data.frame(
+  Treatment = rep(c("Group 1", "Group 2"), each = 200),
+  row.names = colnames(sim_1.otu_table),
+  stringsAsFactors = FALSE))
+sim_1.sample_data
+```
+
+
+
+```{r}
+sim_1.physeq <- phyloseq(otu_table(sim_1.otu_table, taxa_are_rows = TRUE), 
+                         tax_table(sim_1.tax_mat),
+                         sim_1.sample_data)
+sim_1.physeq
+```
