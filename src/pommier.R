@@ -123,8 +123,17 @@ plot_communities <- function(community_matrix) {
           panel.border = element_blank(), 
           axis.ticks = element_blank(),
           legend.position = "none") +
-    scale_x_discrete(label = function (x) str_to_title(str_replace(x, "_", " "))) + 
-    scale_y_discrete(label = function (x) str_replace(x, "_", " "))
+    scale_x_discrete(label = function (x) str_to_title(str_replace(x, "_", " ")),
+                     expand = c(0,0)) + 
+    scale_y_discrete(label = function (x) str_replace(x, "_", " "),
+                     expand = c(0,0))
+}
+
+otu_mat_from_lists <- function(...){
+  otu_mat <- cbind(...)
+  row.names(otu_mat) <- paste("OTU", 1:nrow(otu_mat), sep = "_")
+  
+  return(otu_mat)
 }
 
 sim.sample.contig_presence <- function(num_otus, num_present){
