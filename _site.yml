@@ -5,6 +5,8 @@ navbar:
   left:
   - text: About
     href: index.html
+  - text: Structures
+    href: structures.html
   - text: Nectar Microbiomes
     href: nmph.html
     
