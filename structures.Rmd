@@ -30,13 +30,11 @@ theme_set(theme_light())
 
 ```
 
-An overview of community structures in microbial ecology.
-
-Borrowing heavily from [Partitioning the turnover and nestedness components of beta diversity](https://onlinelibrary.wiley.com/doi/full/10.1111/j.1466-8238.2009.00490.x) by Andres Baselga.
+The goal of this article is to review common community structures studied in microbial ecology and to see how what patterns may arise when persistent homology is applied to these communities. The information here borrows heavily from [Partitioning the turnover and nestedness components of beta diversity](https://onlinelibrary.wiley.com/doi/full/10.1111/j.1466-8238.2009.00490.x) by Andres Baselga.
 
 ## Simulating communities
 
-Start off with basic examples from Baselga's paper. Starting by reproducing these structures:
+We will start off by reproducing the examples in Baselga's paper:
 
 ![alt](./images/baselga-structures.png)
 
